@@ -5,5 +5,6 @@ public enum MissionResult {
     FAILED,
     PLANNED,
     IN_PROGRESS,
-    COMPLETED
+    COMPLETED,
+    WAITING_FOR_ASSIGNMENT
 }

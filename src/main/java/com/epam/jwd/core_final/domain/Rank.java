@@ -3,6 +3,7 @@ package com.epam.jwd.core_final.domain;
 import com.epam.jwd.core_final.exception.UnknownEntityException;
 
 public enum Rank implements BaseEntity {
+    DEAD(0L),
     TRAINEE(1L),
     SECOND_OFFICER(2L),
     FIRST_OFFICER(3L),
@@ -33,6 +34,18 @@ public enum Rank implements BaseEntity {
      * @throws UnknownEntityException if such id does not exist
      */
     public static Rank resolveRankById(int id) {
-        return null;
+        switch (id){
+            case 0:
+                return DEAD;
+            case 1:
+                return TRAINEE;
+            case 2:
+                return SECOND_OFFICER;
+            case 3:
+                return FIRST_OFFICER;
+            case 4:
+                return CAPTAIN;
+        }
+        throw new UnknownEntityException("Rank");
     }
 }

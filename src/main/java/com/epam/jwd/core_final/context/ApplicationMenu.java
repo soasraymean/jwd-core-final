@@ -1,16 +1,15 @@
 package com.epam.jwd.core_final.context;
 
 // todo replace Object with your own types
-@FunctionalInterface
+
+import com.epam.jwd.core_final.context.impl.NassaContext;
+
 public interface ApplicationMenu {
 
-    ApplicationContext getApplicationContext();
+    ApplicationContext context = NassaContext.getInstance();
 
-    default Object printAvailableOptions() {
-        return null;
-    }
+    boolean printAvailableOptions();
 
-    default Object handleUserInput(Object o) {
-        return null;
-    }
+    boolean handleUserInput();
+
 }
