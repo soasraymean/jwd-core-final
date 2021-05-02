@@ -2,21 +2,37 @@ package com.epam.jwd.core_final.service.impl;
 
 import com.epam.jwd.core_final.context.impl.NassaContext;
 import com.epam.jwd.core_final.criteria.Criteria;
-import com.epam.jwd.core_final.domain.*;
+import com.epam.jwd.core_final.domain.CrewMember;
+import com.epam.jwd.core_final.domain.Rank;
+import com.epam.jwd.core_final.domain.Role;
+import com.epam.jwd.core_final.domain.Spaceship;
+import com.epam.jwd.core_final.domain.TheCrew;
 import com.epam.jwd.core_final.exception.InvalidInputException;
 import com.epam.jwd.core_final.factory.impl.TheCrewFactory;
 import com.epam.jwd.core_final.service.CrewService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
-
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class CrewServiceImpl implements CrewService {
 
     private static final Logger logger = LoggerFactory.getLogger(CrewServiceImpl.class);
 
+    private static CrewService INSTANCE;
+    public static CrewService getInstance(){
+        if(INSTANCE==null){
+            INSTANCE=new CrewServiceImpl();
+        }
+        return INSTANCE;
+    }
+    private CrewServiceImpl() {
+
+    }
     @Override
     public TheCrew generateTheCrewForSpaceship(Spaceship spaceship) {
         NassaContext nassaContext = NassaContext.getInstance();

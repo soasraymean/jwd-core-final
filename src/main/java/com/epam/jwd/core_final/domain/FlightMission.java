@@ -1,13 +1,9 @@
 package com.epam.jwd.core_final.domain;
 
-import com.epam.jwd.core_final.context.impl.NassaContext;
 import com.epam.jwd.core_final.service.SpacemapService;
 import com.epam.jwd.core_final.service.impl.SpacemapServiceImpl;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Expected fields:
@@ -80,7 +76,7 @@ public class FlightMission extends AbstractBaseEntity {
         endDate = startDate.plusMonths(1 + (int) (Math.random() * 12));
 
         missionResult = MissionResult.WAITING_FOR_ASSIGNMENT;
-        SpacemapService spacemapService = new SpacemapServiceImpl();
+        SpacemapService spacemapService = SpacemapServiceImpl.getInstance();
         do {
             from = spacemapService.getRandomPlanet();
             to = spacemapService.getRandomPlanet();

@@ -23,7 +23,7 @@ public class Spaceship extends AbstractBaseEntity {
     @Override
     public String toString() {
         return "Spaceship{" +
-                "id="+id+
+                "id=" + id +
                 ", name='" + name + '\'' +
                 ", flightDistance=" + flightDistance +
                 ", isReadyForNextMissions=" + isReadyForNextMissions +
@@ -49,7 +49,7 @@ public class Spaceship extends AbstractBaseEntity {
         this.crewInfo = crewInfo;
         this.flightDistance = flightDistance;
         this.isReadyForNextMissions = true;
-        this.id =id;
+        this.id = id;
     }
 
     public boolean isReady() {

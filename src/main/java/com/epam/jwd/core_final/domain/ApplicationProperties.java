@@ -2,11 +2,7 @@ package com.epam.jwd.core_final.domain;
 
 import com.epam.jwd.core_final.util.PropertyReaderUtil;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.time.format.DateTimeFormatter;
-import java.util.Properties;
 
 /**
  * This class should be IMMUTABLE!

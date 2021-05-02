@@ -1,16 +1,15 @@
 package com.epam.jwd.core_final.context.impl;
 
 import com.epam.jwd.core_final.context.ApplicationMenu;
-import com.epam.jwd.core_final.domain.CrewMember;
-import com.epam.jwd.core_final.domain.FlightMission;
-import com.epam.jwd.core_final.domain.Spaceship;
-import com.epam.jwd.core_final.domain.TheCrew;
+import com.epam.jwd.core_final.domain.*;
 import com.epam.jwd.core_final.exception.InvalidInputException;
 import com.epam.jwd.core_final.service.CrewService;
 import com.epam.jwd.core_final.service.MissionService;
+import com.epam.jwd.core_final.service.SpacemapService;
 import com.epam.jwd.core_final.service.SpaceshipService;
 import com.epam.jwd.core_final.service.impl.CrewServiceImpl;
 import com.epam.jwd.core_final.service.impl.MissionServiceImpl;
+import com.epam.jwd.core_final.service.impl.SpacemapServiceImpl;
 import com.epam.jwd.core_final.service.impl.SpaceshipServiceImpl;
 import me.tongfei.progressbar.ProgressBar;
 import me.tongfei.progressbar.ProgressBarBuilder;
@@ -24,7 +23,12 @@ import java.util.Scanner;
 
 public class Menu implements ApplicationMenu {
 
-    private static final Logger logger = LoggerFactory.getLogger(ApplicationMenu.class);
+    private static final Logger logger = LoggerFactory.getLogger(Menu.class);
+    private static final CrewService crewService = CrewServiceImpl.getInstance();
+    private static final MissionService missionService = MissionServiceImpl.getInstance();
+    private static final SpacemapService spacemapService = SpacemapServiceImpl.getInstance();
+    private static final SpaceshipService spaceshipService = SpaceshipServiceImpl.getInstance();
+
 
     @Override
     public boolean printAvailableOptions() throws InvalidInputException {
@@ -91,19 +95,16 @@ public class Menu implements ApplicationMenu {
         return true;
     }
 
-    private void printSpacemap(){
+    private void printSpacemap() {
         showProgress();
-
-        SpaceshipService spaceshipService = new SpaceshipServiceImpl();
-        List<Spaceship> list = spaceshipService.findAllSpaceships();
-        for (Spaceship spaceship : list) {
-            System.out.println(spaceship.toString());
+        List<Planet> list = spacemapService.findAllPlanets();
+        for (Planet planet : list) {
+            System.out.println(planet.toString());
 
         }
     }
 
     private void markSpaceshipAsNotReadyAnymore() throws InvalidInputException {
-        SpaceshipService spaceshipService = new SpaceshipServiceImpl();
         Spaceship spaceship = getSpaceshipById();
         System.out.println("Updating information");
         spaceship = spaceshipService.updateSpaceshipDetails(spaceship);
@@ -111,7 +112,6 @@ public class Menu implements ApplicationMenu {
     }
 
     private void markOfficerAsDead() throws InvalidInputException {
-        CrewService crewService = new CrewServiceImpl();
         CrewMember member = getCrewMemberById();
         System.out.println("Updating information");
         member = crewService.updateCrewMemberDetails(member);
@@ -120,22 +120,19 @@ public class Menu implements ApplicationMenu {
 
     private void startMission() throws InvalidInputException {
         Scanner in = new Scanner(System.in);
-        MissionService missionForStartService = new MissionServiceImpl();
-        SpaceshipService warBoatForStartService = new SpaceshipServiceImpl();
-        CrewService crewForMission = new CrewServiceImpl();
         System.out.print("Enter Mission ID: ");
         long missionID = Long.parseLong(in.nextLine());
         logger.info("USER INPUT - " + missionID);
-        FlightMission mission = missionForStartService.findById(missionID);
+        FlightMission mission = missionService.findById(missionID);
         System.out.println("Chosen mission: " + mission.toString());
         System.out.print("Enter Spaceship ID: ");
         long shipID = Long.parseLong(in.nextLine());
         logger.info("USER INPUT - " + shipID);
-        Spaceship warBoat = warBoatForStartService.findById(shipID);
+        Spaceship warBoat = spaceshipService.findById(shipID);
         System.out.println("Chosen spaceship: " + warBoat.toString());
         List<TheCrew> theCrewList = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            theCrewList.add(crewForMission.generateTheCrewForSpaceship(warBoat));
+            theCrewList.add(crewService.generateTheCrewForSpaceship(warBoat));
         }
         for (int i = 1; i < theCrewList.size(); i++) {
             if (theCrewList.get(0).getMembersInfo().size() != theCrewList.get(i).getMembersInfo().size()) {
@@ -159,25 +156,24 @@ public class Menu implements ApplicationMenu {
         }
 
 
-        warBoat = warBoatForStartService.updateSpaceshipDetails(warBoat);
-        mission = missionForStartService.updateMissionDetails(mission, warBoat, theCrew);
+        warBoat = spaceshipService.updateSpaceshipDetails(warBoat);
+        mission = missionService.updateMissionDetails(mission, warBoat, theCrew);
         int rng = (int) (1 + Math.random() * 10);
         if (rng % 2 != 0) {
-            missionForStartService.updateMissionDetails(mission, 1);
-            warBoatForStartService.updateSpaceshipDetails(warBoat, 1);
-            crewForMission.updateCrewMemberDetails(theCrew, 1);
+            missionService.updateMissionDetails(mission, 1);
+            spaceshipService.updateSpaceshipDetails(warBoat, 1);
+            crewService.updateCrewMemberDetails(theCrew, 1);
             System.out.println("\n\n\nSUCCESS");
         } else {
-            missionForStartService.updateMissionDetails(mission, 2);
-            warBoatForStartService.updateSpaceshipDetails(warBoat, 2);
-            crewForMission.updateCrewMemberDetails(theCrew, 2);
+            missionService.updateMissionDetails(mission, 2);
+            spaceshipService.updateSpaceshipDetails(warBoat, 2);
+            crewService.updateCrewMemberDetails(theCrew, 2);
             System.out.println("\n\n\nSOMETHING WENT WRONG");
         }
     }
 
     private CrewMember getCrewMemberById() throws InvalidInputException {
         Scanner in = new Scanner(System.in);
-        CrewService crewService = new CrewServiceImpl();
         System.out.print("Enter Crew Member ID: ");
         long memberID = Long.parseLong(in.nextLine());
         logger.info("USER INPUT - " + memberID);
@@ -188,7 +184,6 @@ public class Menu implements ApplicationMenu {
 
     private void printMissionById() throws InvalidInputException {
         Scanner in = new Scanner(System.in);
-        MissionService missionService = new MissionServiceImpl();
         System.out.print("Enter Mission ID: ");
         long missionID = Long.parseLong(in.nextLine());
         logger.info("USER INPUT - " + missionID);
@@ -198,7 +193,6 @@ public class Menu implements ApplicationMenu {
 
     private Spaceship getSpaceshipById() throws InvalidInputException {
         Scanner in = new Scanner(System.in);
-        SpaceshipService spaceshipService = new SpaceshipServiceImpl();
         System.out.print("Enter Spaceship ID: ");
         long shipID = Long.parseLong(in.nextLine());
         logger.info("USER INPUT - " + shipID);
@@ -219,7 +213,6 @@ public class Menu implements ApplicationMenu {
 
     private void printCrewCandidates() {
         showProgress();
-        CrewService crewService = new CrewServiceImpl();
         List<CrewMember> list = crewService.findAllCrewMembers();
         for (CrewMember cm : list) {
             System.out.println(cm.toString());
@@ -228,8 +221,6 @@ public class Menu implements ApplicationMenu {
 
     private void printSpaceships() {
         showProgress();
-
-        SpaceshipService spaceshipService = new SpaceshipServiceImpl();
         List<Spaceship> list = spaceshipService.findAllSpaceships();
         for (Spaceship spaceship : list) {
             System.out.println(spaceship.toString());
@@ -239,7 +230,6 @@ public class Menu implements ApplicationMenu {
 
     private void printMissions() {
         showProgress();
-        MissionService missionService = new MissionServiceImpl();
         List<FlightMission> list = missionService.findAllMissions();
         for (FlightMission mission : list) {
             System.out.println(mission.toString());

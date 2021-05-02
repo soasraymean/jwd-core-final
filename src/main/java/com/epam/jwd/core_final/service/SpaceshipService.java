@@ -2,7 +2,6 @@ package com.epam.jwd.core_final.service;
 
 import com.epam.jwd.core_final.criteria.Criteria;
 import com.epam.jwd.core_final.domain.Spaceship;
-import com.epam.jwd.core_final.domain.TheCrew;
 import com.epam.jwd.core_final.exception.InvalidInputException;
 
 import java.util.List;
@@ -13,6 +12,7 @@ import java.util.Optional;
  * You have to use streamAPI for filtering, mapping, collecting, iterating
  */
 public interface SpaceshipService {
+
 
     List<Spaceship> findAllSpaceships();
 

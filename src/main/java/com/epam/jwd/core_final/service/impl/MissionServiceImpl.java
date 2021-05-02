@@ -17,6 +17,18 @@ import java.util.Optional;
 
 public class MissionServiceImpl implements MissionService {
     private static final Logger logger = LoggerFactory.getLogger(MissionServiceImpl.class);
+
+    private static MissionService INSTANCE;
+
+    public static MissionService getInstance(){
+        if(INSTANCE==null){
+            INSTANCE=new MissionServiceImpl();
+        }
+        return INSTANCE;
+    }
+    private MissionServiceImpl(){
+
+    }
     @Override
     public List<FlightMission> findAllMissions() {
         NassaContext nassaContext = NassaContext.getInstance();

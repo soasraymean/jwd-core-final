@@ -1,6 +1,5 @@
 package com.epam.jwd.core_final.factory.impl;
 
-import com.epam.jwd.core_final.domain.BaseEntity;
 import com.epam.jwd.core_final.domain.FlightMission;
 import com.epam.jwd.core_final.factory.EntityFactory;
 

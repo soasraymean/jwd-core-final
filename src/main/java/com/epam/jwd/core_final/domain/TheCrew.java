@@ -9,7 +9,7 @@ public class TheCrew implements BaseEntity {
     private List<CrewMember> membersInfo;
 
     public TheCrew(List<CrewMember> membersInfo) {
-        id=++idCounter;
+        id = ++idCounter;
         this.membersInfo = membersInfo;
         for (CrewMember member : membersInfo) {
             if (member.getRole().equals(Role.COMMANDER)) {

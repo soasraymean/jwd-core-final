@@ -24,6 +24,6 @@ public final class SpaceshipFactory implements EntityFactory<Spaceship> {
     @Override
     public Spaceship create(Object... args) {
         ObjectMapper objectMapper = new ObjectMapper();
-        return new Spaceship((String) args[0], (long) args[1], objectMapper.convertValue(args[2], new TypeReference<HashMap<Role, Short>>(){}),(Long)args[3]);
+        return new Spaceship((String) args[0], (long) args[1], objectMapper.convertValue(args[2], new TypeReference<HashMap<Role, Short>>() {}), (Long) args[3]);
     }
 }

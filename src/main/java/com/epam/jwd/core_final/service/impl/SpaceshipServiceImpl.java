@@ -3,7 +3,6 @@ package com.epam.jwd.core_final.service.impl;
 import com.epam.jwd.core_final.context.impl.NassaContext;
 import com.epam.jwd.core_final.criteria.Criteria;
 import com.epam.jwd.core_final.domain.Spaceship;
-import com.epam.jwd.core_final.domain.TheCrew;
 import com.epam.jwd.core_final.exception.InvalidInputException;
 import com.epam.jwd.core_final.service.SpaceshipService;
 import org.slf4j.Logger;
@@ -16,6 +15,19 @@ import java.util.Optional;
 public class SpaceshipServiceImpl implements SpaceshipService {
 
     private static final Logger logger = LoggerFactory.getLogger(SpaceshipServiceImpl.class);
+
+    private static SpaceshipService INSTANCE;
+
+    public static SpaceshipService getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new SpaceshipServiceImpl();
+        }
+        return INSTANCE;
+    }
+
+    private SpaceshipServiceImpl() {
+
+    }
 
     @Override
     public List<Spaceship> findAllSpaceships() {
@@ -38,7 +50,7 @@ public class SpaceshipServiceImpl implements SpaceshipService {
         NassaContext nassaContext = NassaContext.getInstance();
         List<Spaceship> spaceships = new ArrayList<>(nassaContext.retrieveBaseEntityList(Spaceship.class));
         for (Spaceship spc : spaceships) {
-            if(spaceship.getId().longValue()==spc.getId().longValue()){
+            if (spaceship.getId().longValue() == spc.getId().longValue()) {
                 spc.setReadyForNextMissions(!spc.isReady());
                 return spc;
             }
@@ -60,7 +72,7 @@ public class SpaceshipServiceImpl implements SpaceshipService {
     public Spaceship findById(long id) throws InvalidInputException {
         NassaContext nassaContext = NassaContext.getInstance();
         List<Spaceship> list = new ArrayList<>(nassaContext.retrieveBaseEntityList(Spaceship.class));
-        if(id<1 || id>list.size()){
+        if (id < 1 || id > list.size()) {
             logger.error("Wrong ID");
             throw new InvalidInputException();
         }
