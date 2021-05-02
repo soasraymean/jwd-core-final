@@ -6,16 +6,21 @@ import com.epam.jwd.core_final.domain.FlightMission;
 import com.epam.jwd.core_final.domain.MissionResult;
 import com.epam.jwd.core_final.domain.Spaceship;
 import com.epam.jwd.core_final.domain.TheCrew;
+import com.epam.jwd.core_final.exception.InvalidInputException;
 import com.epam.jwd.core_final.service.MissionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class MissionProcessor implements MissionService {
+public class MissionServiceImpl implements MissionService {
+    private static final Logger logger = LoggerFactory.getLogger(MissionServiceImpl.class);
     @Override
     public List<FlightMission> findAllMissions() {
-        return null;
+        NassaContext nassaContext = NassaContext.getInstance();
+        return new ArrayList<>(nassaContext.retrieveBaseEntityList(FlightMission.class));
     }
 
     @Override
@@ -49,9 +54,13 @@ public class MissionProcessor implements MissionService {
     }
 
     @Override
-    public FlightMission findById(long id) {
+    public FlightMission findById(long id) throws InvalidInputException {
         NassaContext nassaContext = NassaContext.getInstance();
         List<FlightMission> list = new ArrayList<>(nassaContext.retrieveBaseEntityList(FlightMission.class));
+        if(id<1 || id>list.size()){
+            logger.error("Wrong ID");
+            throw new InvalidInputException();
+        }
         FlightMission wanted = list.stream()
                 .filter(mission -> id == mission.getId())
                 .findAny()

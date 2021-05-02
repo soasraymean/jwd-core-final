@@ -2,6 +2,7 @@ package com.epam.jwd.core_final.context;
 
 import com.epam.jwd.core_final.context.impl.Menu;
 import com.epam.jwd.core_final.context.impl.NassaContext;
+import com.epam.jwd.core_final.exception.InvalidInputException;
 import com.epam.jwd.core_final.exception.InvalidStateException;
 import me.tongfei.progressbar.ProgressBar;
 import me.tongfei.progressbar.ProgressBarBuilder;
@@ -9,16 +10,15 @@ import me.tongfei.progressbar.ProgressBarStyle;
 
 public interface Application {
 
-    static void start() throws InvalidStateException {
+    static void start() throws InvalidStateException, InvalidInputException {
 //        final Supplier<ApplicationContext> applicationContextSupplier = ()->{
 //            return null;
 //        }; // todo
 
         final NassaContext nassaContext = NassaContext.getInstance();
-        //showProgress("Nassa Context is in progress");
+        showProgress("Loading");
         System.out.println("\t!!!Space Rangers 3!!!(beta)\n");
         nassaContext.init();
-        showProgress("NASSA Context Initialization");
         ApplicationMenu menu = new Menu();
         while (true) {
             menu.printAvailableOptions();

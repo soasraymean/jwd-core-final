@@ -3,12 +3,19 @@ package com.epam.jwd.core_final.service.impl;
 import com.epam.jwd.core_final.context.impl.NassaContext;
 import com.epam.jwd.core_final.criteria.Criteria;
 import com.epam.jwd.core_final.domain.*;
+import com.epam.jwd.core_final.exception.InvalidInputException;
 import com.epam.jwd.core_final.factory.impl.TheCrewFactory;
 import com.epam.jwd.core_final.service.CrewService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class CrewProcessor implements CrewService {
+
+
+public class CrewServiceImpl implements CrewService {
+
+    private static final Logger logger = LoggerFactory.getLogger(CrewServiceImpl.class);
 
     @Override
     public TheCrew generateTheCrewForSpaceship(Spaceship spaceship) {
@@ -36,7 +43,8 @@ public class CrewProcessor implements CrewService {
 
     @Override
     public List<CrewMember> findAllCrewMembers() {
-        return null;
+        NassaContext nassaContext = NassaContext.getInstance();
+        return new ArrayList<>(nassaContext.retrieveBaseEntityList(CrewMember.class));
     }
 
     @Override
@@ -74,10 +82,14 @@ public class CrewProcessor implements CrewService {
     }
 
     @Override
-    public CrewMember findById(long id) {
+    public CrewMember findById(long id) throws InvalidInputException {
         NassaContext nassaContext = NassaContext.getInstance();
         List<CrewMember> list = new ArrayList<>(nassaContext.retrieveBaseEntityList(CrewMember.class));
-        CrewMember wanted = list.stream()
+        if(id<1 || id>list.size()){
+            logger.error("Wrong ID");
+            throw new InvalidInputException();
+        }
+            CrewMember wanted = list.stream()
                 .filter(member -> id== member.getId())
                 .findAny()
                 .orElse(null);

@@ -4,17 +4,23 @@ import com.epam.jwd.core_final.context.impl.NassaContext;
 import com.epam.jwd.core_final.criteria.Criteria;
 import com.epam.jwd.core_final.domain.Spaceship;
 import com.epam.jwd.core_final.domain.TheCrew;
+import com.epam.jwd.core_final.exception.InvalidInputException;
 import com.epam.jwd.core_final.service.SpaceshipService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class SpaceshipProcessor implements SpaceshipService {
+public class SpaceshipServiceImpl implements SpaceshipService {
+
+    private static final Logger logger = LoggerFactory.getLogger(SpaceshipServiceImpl.class);
 
     @Override
     public List<Spaceship> findAllSpaceships() {
-        return null;
+        NassaContext nassaContext = NassaContext.getInstance();
+        return new ArrayList<>(nassaContext.retrieveBaseEntityList(Spaceship.class));
     }
 
     @Override
@@ -51,11 +57,15 @@ public class SpaceshipProcessor implements SpaceshipService {
     }
 
     @Override
-    public Spaceship findById(long shipID) {
+    public Spaceship findById(long id) throws InvalidInputException {
         NassaContext nassaContext = NassaContext.getInstance();
         List<Spaceship> list = new ArrayList<>(nassaContext.retrieveBaseEntityList(Spaceship.class));
+        if(id<1 || id>list.size()){
+            logger.error("Wrong ID");
+            throw new InvalidInputException();
+        }
         Spaceship wanted = list.stream()
-                .filter(spaceship -> shipID == spaceship.getId())
+                .filter(spaceship -> id == spaceship.getId())
                 .findAny()
                 .orElse(null);
         return wanted;

@@ -3,6 +3,7 @@ package com.epam.jwd.core_final.service;
 import com.epam.jwd.core_final.criteria.Criteria;
 import com.epam.jwd.core_final.domain.Spaceship;
 import com.epam.jwd.core_final.domain.TheCrew;
+import com.epam.jwd.core_final.exception.InvalidInputException;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +29,7 @@ public interface SpaceshipService {
     // spaceship unique criteria - only name!
     Spaceship createSpaceship(Spaceship spaceship) throws RuntimeException;
 
-    Spaceship findById(long shipID);
+    Spaceship findById(long shipID) throws InvalidInputException;
 
     Spaceship updateSpaceshipDetails(Spaceship warBoat, int i);
 }

@@ -3,8 +3,8 @@ package com.epam.jwd.core_final.context.impl;
 import com.epam.jwd.core_final.context.ApplicationContext;
 import com.epam.jwd.core_final.domain.*;
 import com.epam.jwd.core_final.exception.InvalidStateException;
+import com.epam.jwd.core_final.exception.UnknownEntityException;
 import com.epam.jwd.core_final.factory.impl.*;
-import com.epam.jwd.core_final.service.impl.CrewProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +19,7 @@ public class NassaContext implements ApplicationContext {
 
     // no getters/setters for them
 
-    private static Logger logger = LoggerFactory.getLogger(NassaContext.class);
+    private static final Logger logger = LoggerFactory.getLogger(NassaContext.class);
 
     private static NassaContext INSTANCE;
 
@@ -29,11 +29,12 @@ public class NassaContext implements ApplicationContext {
         }
         return INSTANCE;
     }
-    private NassaContext(){
+
+    private NassaContext() {
 
     }
 
-    private ApplicationProperties applicationProperties = ApplicationProperties.getInstance();
+    private final ApplicationProperties applicationProperties = ApplicationProperties.getInstance();
     private Collection<CrewMember> crewMembers = new ArrayList<>();
     private Collection<Spaceship> spaceships = new ArrayList<>();
     private Collection<Planet> planetMap = new ArrayList<>();
@@ -51,6 +52,10 @@ public class NassaContext implements ApplicationContext {
             collection = (Collection<T>) planetMap;
         } else if (FlightMission.class.equals(tClass)) {
             collection = (Collection<T>) flightMissions;
+        }
+        if (collection == null) {
+            logger.error("Unknown Entity Exception");
+            throw new UnknownEntityException(tClass.getName() + " was passed to method retrieveBaseEntityList");
         }
         return collection; // throw exception if null?
 
@@ -135,7 +140,7 @@ public class NassaContext implements ApplicationContext {
                     }
                     String name = spaceshipInfo.substring(0, spaceshipInfo.indexOf(';'));
                     long flightDistance = Long.parseLong(spaceshipInfo.substring(spaceshipInfo.indexOf(';') + 1, spaceshipInfo.lastIndexOf(';')));
-                    if (name.isEmpty()){
+                    if (name.isEmpty()) {
                         logger.error("Invalid State Exception");
                         throw new InvalidStateException();
                     }
@@ -185,11 +190,11 @@ public class NassaContext implements ApplicationContext {
     private void generateMissions() {
         MissionsFactory missionsFactory = MissionsFactory.getInstance();
 
-        File jsonFile = new File("C:\\Users\\danko\\IdeaProjects\\jwd-core-final\\src\\main\\resources\\"+applicationProperties.getOutputRootDir()+applicationProperties.getMissionsFileName());
+        File jsonFile = new File("C:\\Users\\danko\\IdeaProjects\\jwd-core-final\\src\\main\\resources\\" + applicationProperties.getOutputRootDir() + applicationProperties.getMissionsFileName());
         jsonFile.getParentFile().mkdirs();
-        try(FileWriter fileWriter = new FileWriter(jsonFile)) {
-            int missonNumber = planetMap.size();
-            for (int i = 0; i < missonNumber; i++) {
+        try (FileWriter fileWriter = new FileWriter(jsonFile)) {
+            int missionsQuantity = planetMap.size();
+            for (int i = 0; i < missionsQuantity; i++) {
                 flightMissions.add(missionsFactory.create());
             }
             for (FlightMission flightMission : flightMissions) {

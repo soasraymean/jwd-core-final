@@ -4,6 +4,7 @@ import com.epam.jwd.core_final.criteria.Criteria;
 import com.epam.jwd.core_final.domain.FlightMission;
 import com.epam.jwd.core_final.domain.Spaceship;
 import com.epam.jwd.core_final.domain.TheCrew;
+import com.epam.jwd.core_final.exception.InvalidInputException;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +21,7 @@ public interface MissionService {
 
     FlightMission createMission(FlightMission flightMission);
 
-    FlightMission findById(long id);
+    FlightMission findById(long id) throws InvalidInputException;
 
     FlightMission updateMissionDetails(FlightMission mission, int status);
 }

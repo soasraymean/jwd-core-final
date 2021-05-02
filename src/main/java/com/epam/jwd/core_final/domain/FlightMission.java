@@ -1,6 +1,8 @@
 package com.epam.jwd.core_final.domain;
 
 import com.epam.jwd.core_final.context.impl.NassaContext;
+import com.epam.jwd.core_final.service.SpacemapService;
+import com.epam.jwd.core_final.service.impl.SpacemapServiceImpl;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -30,14 +32,13 @@ public class FlightMission extends AbstractBaseEntity {
     private Spaceship spaceship;
     private TheCrew assignedCrew;
     private MissionResult missionResult;
+    private Planet from;
+    private Planet to;
 
     @Override
     public Long getId() {
         return id;
     }
-
-    private Planet from;
-    private Planet to;
 
     public void setSpaceship(Spaceship spaceship) {
         this.spaceship = spaceship;
@@ -51,18 +52,19 @@ public class FlightMission extends AbstractBaseEntity {
         this.missionResult = missionResult;
     }
 
-    public String toJSON(){
+    public String toJSON() {
         return "FlightMission{" +
-                "ID="+id+", "+
+                "ID=" + id + ", " +
                 "name='" + name + '\'' +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", distance=" + distance + "}";
     }
+
     @Override
     public String toString() {
         return "FlightMission{" +
-                "ID="+id+", "+
+                "ID=" + id + ", " +
                 "name='" + name + '\'' +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
@@ -73,23 +75,19 @@ public class FlightMission extends AbstractBaseEntity {
     }
 
     public FlightMission(Long id) {
-        this.id=id;
+        this.id = id;
         startDate = LocalDate.now();
         endDate = startDate.plusMonths(1 + (int) (Math.random() * 12));
 
-        NassaContext nassaContext = NassaContext.getInstance();
-        Collection<Planet> planets = nassaContext.retrieveBaseEntityList(Planet.class);
-        List<Planet> planetList = new ArrayList<>(planets);
-        int i1 = 0, i2 = 0;
         missionResult = MissionResult.WAITING_FOR_ASSIGNMENT;
-        while (i1 == i2) {
-            i1 = (int) (Math.random() * planets.size());
-            i2 = (int) (Math.random() * planets.size());
-        }
-        from = planetList.get(i1);
-        to = planetList.get(i2);
-        name=from.getName()+" - "+to.getName();
-        distance = (long) Math.sqrt(Math.pow(from.getX() - to.getX(), 2) + Math.pow(from.getY() - to.getY(), 2));
+        SpacemapService spacemapService = new SpacemapServiceImpl();
+        do {
+            from = spacemapService.getRandomPlanet();
+            to = spacemapService.getRandomPlanet();
+        } while (from.getName().equals(to.getName()));
+
+        name = from.getName() + " - " + to.getName();
+        distance = spacemapService.getDistanceBetweenPlanets(from, to);
 
     }
 

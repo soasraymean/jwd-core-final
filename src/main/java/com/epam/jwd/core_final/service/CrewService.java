@@ -4,6 +4,7 @@ import com.epam.jwd.core_final.criteria.Criteria;
 import com.epam.jwd.core_final.domain.CrewMember;
 import com.epam.jwd.core_final.domain.Spaceship;
 import com.epam.jwd.core_final.domain.TheCrew;
+import com.epam.jwd.core_final.exception.InvalidInputException;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +33,7 @@ public interface CrewService {
     // crewmember unique criteria - only name!
     CrewMember createCrewMember(CrewMember crewMember) throws RuntimeException;
 
-    CrewMember findById(long id);
+    CrewMember findById(long id) throws InvalidInputException;
 
     TheCrew updateCrewMemberDetails(TheCrew theCrew, int i);
 }
